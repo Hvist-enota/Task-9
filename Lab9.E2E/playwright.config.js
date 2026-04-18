@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const setupBrowser = process.env.PW_SETUP_BROWSER || 'chromium';
+
 export default defineConfig({
   testDir: './tests',
   timeout: 60000,
@@ -13,7 +15,11 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.js/ },
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.js/,
+      use: { browserName: setupBrowser },
+    },
     {
       name: 'chromium',
       dependencies: ['setup'],

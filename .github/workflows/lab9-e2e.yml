@@ -18,6 +18,7 @@ jobs:
     env:
       UMSYS_EMAIL: ${{ secrets.UMSYS_EMAIL }}
       UMSYS_PASSWORD: ${{ secrets.UMSYS_PASSWORD }}
+      PW_SETUP_BROWSER: ${{ matrix.browser }}
 
     steps:
       - uses: actions/checkout@v4
@@ -32,11 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browser (${{ matrix.browser }})
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Playwright browsers for setup + target (${{ matrix.browser }})
+        run: npx playwright install --with-deps chromium ${{ matrix.browser }}
 
       - name: Run Playwright tests on ${{ matrix.browser }}
-        run: npx playwright test --project=setup --project=${{ matrix.browser }}
+        run: PW_SETUP_BROWSER=${{ matrix.browser }} npx playwright test --project=setup --project=${{ matrix.browser }}
 
       - name: Upload Playwright report (${{ matrix.browser }})
         if: always()
